@@ -12,10 +12,22 @@ let sign1;
 let sign2;
 let variable;
 let middleNum;
-let factorsFirstNum = [];
+let factorsFirstNum = []; 
+//is the factors of the number that have to divide (x+2)(x-3)/2(firstnum of expression)this one
+
+//try: 352x^2 - 794x + 414 answer not simplified
+//try: -40x^2 - 123x + 442 correct
 
 function getInputValue() {
+    const saiyanBlue = document.getElementById('inputbox').value;
+    if(saiyanBlue === 'saiyan blue') {
+        document.getElementById('answer').innerHTML = "SUB TO MY MASTER, SAIYAN BLUE";
+    } else if(saiyanBlue === 'ivan') {
+        document.getElementById('answer').innerHTML = "ivan is my mastah";
+    }
+
     const factors = [];
+    factorsFirstNum = [];
     inputVal = document.getElementById("inputbox").value;
     const expression = inputVal.split(" ");
     expression.forEach(function(value, index) {
@@ -23,7 +35,7 @@ function getInputValue() {
     })
     //expression = ['x2', '+', '8x', '+', '7'];
 
-    //if x is first
+    //if variable is first
     if(char.includes(expression[0][0])) {
         variable = expression[0][0];
         firstnum = 1;
@@ -63,22 +75,29 @@ function getInputValue() {
     console.log({middleNum});
     
     // finding the factors
-    for(let i = -100; i<100; i++) {
+    for(let i = -10000; i<10000; i++) {
         if(product % i === 0) {
             factors.push(i);
         }
         
-        for(let b = 0; b<100; b++) {
-            if(i * b === firstnum && i !== 1 && i !== firstnum) {
-                factorsFirstNum.push(i);
-                factorsFirstNum.push(b);
+        //finding the two factors of firstnum for dividing (sdf)(df)
+        for(let b = 0; b<10000; b++) {
+            if(i * b === firstnum && i !== 1 && i !== -1 && i !== firstnum && i !== -firstnum) {
+                factorsFirstNum.push([i, b]);
             }
         }
     }
+    //at this point, 
+    //e.g. firstnum = 26. 
+    //factorsfirstnum = [[2,6], [3,4], [4,3], [6,2]];
 
     console.log({factorsFirstNum});
-    factorsFirstNum = [...new Set(factorsFirstNum)];
-    //error di set, don't use set, because if 4, [2, 2], there will only be 1 2;
+    //remove the 1/2 of the array, because it duplicated.
+    //if factorsfirstnum = [[2,2]] <-- only one factor, don't remove
+    //if factorfistnum.length > 1 remove 1/2 bc duplicated.
+    if(factorsFirstNum.length > 1) {
+        factorsFirstNum = factorsFirstNum.slice(0, factorsFirstNum.length/2)
+    }
     console.log({factorsFirstNum});
 
     //finding the real factor,  = the middle num
@@ -107,16 +126,33 @@ function getInputValue() {
     } else {
         //else if the (sdsfd) can't be divided by the firstnum directly, divide each() 
         //with the factors of firstnum. 
+        
+        //6q^2 - 17q + 12
+        //firstnum = 6
+        //factorsfirstnum = [[2, 3]];
+        //(6q - 9)(6q - 8)
         console.log({factorsFirstNum});
         factorsFirstNum.forEach(value => {
-            if(factor1 % value === 0) {
-                factor1 /= value;
-                firstFinal /= value;
-                console.log('1', {value});
-            } else if(factor2 % value === 0) {
-                factor2 /= value;
-                secondFinal /= value;
-                console.log('2',  {value});
+            if(factor1 % value[0] === 0 && factor2 % value[1] === 0) {
+                console.log({value});
+                console.log(factor1, firstFinal);
+                console.log(factor2, secondFinal);
+                factor1 /= value[0];
+                firstFinal /= value[0];
+
+                factor2 /= value[1];
+                secondFinal /= value[1];
+                console.log('this one');
+            }
+            
+            if(factor1 % value[1] === 0 && factor2 % value[0] === 0) {
+                console.log({value});
+                factor1 /= value[1];
+                firstFinal /= value[1];
+                
+                factor2 /= value[0];
+                secondFinal /= value[0];
+                console.log('that one');
             }
         })
     }
@@ -146,13 +182,11 @@ function getInputValue() {
     }
 
     finalAnswer = `(${firstFinal} ${sign1} ${factor1})(${secondFinal} ${sign2} ${factor2})`;
-    // finalAnswer = `(${firstFinal} ${factor1})(${secondFinal} ${factor2})`;
     console.log(finalAnswer);
-    // document.body.innerHTML = finalAnswer;
-    //TODO simplify the answer
-    console.log('testing that the commit works');
 
-    //this is a called mom commit
+    document.getElementById('answer').innerHTML = finalAnswer;
+    // console.log(document.getElementById('answer'));
+
 
 }
 
